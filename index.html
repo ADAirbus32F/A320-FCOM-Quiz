@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A320 FCOM – Professional Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef2f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .logo {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .logo img {
+      max-height: 60px;
+    }
+    .question-block {
+      background: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .progress-bar {
+      background: #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress {
+      height: 20px;
+      background: #007bff;
+      width: 0%;
+      color: white;
+      text-align: center;
+      line-height: 20px;
+      font-size: 12px;
+    }
+    .navigation {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .navigation button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .timer {
+      text-align: right;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .result, .review {
+      margin-top: 30px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Azul_Brasil_logo.png" alt="Azul Logo" /></div>
+    <h1>A320 FCOM – General Information Quiz</h1>
+        <div class="progress-bar"><div id="progress" class="progress">0%</div></div>
+    <div id="quizContainer"></div>
+    <div class="navigation">
+      <button onclick="prevQuestion()">Back</button>
+      <button onclick="nextQuestion()">Next</button>
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+    <div id="results" class="result"></div>
+    <div id="review" class="review"></div>
+  </div>
+  <script>
+    const questions = [
+{
+      question: "What is the main purpose of the FCOM?",
+      options: ['Provide maintenance data for mechanics', 'Describe administrative company procedures', 'Serve as an operational reference for flight crew', 'Document aircraft modification history'],
+      correct: "Serve as an operational reference for flight crew",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "Which operational philosophy does Airbus promote?",
+      options: ['Commander-centered decision without CRM', 'Standardized decision-making based on safety and CRM', 'Full use of automation in all phases', 'Varying procedures per pilot experience'],
+      correct: "Standardized decision-making based on safety and CRM",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "Where are aircraft handling instructions found?",
+      options: ['MEL - Minimum Equipment List', 'QRH - Quick Reference Handbook', 'Handling Rules subchapter of FCOM', 'Aircraft General chapter'],
+      correct: "Handling Rules subchapter of FCOM",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "What is the content of 'Safety and Survival Equipment'?",
+      options: ['Medical equipment required on ground', 'Firefighting equipment for hangars', 'Mandatory survival and safety items for crew and passengers', 'Emergency nav and comm systems'],
+      correct: "Mandatory survival and safety items for crew and passengers",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "'Aircraft General' subchapter describes:",
+      options: ['Only cockpit layout', 'Runway limitations on contaminated surfaces', 'General aircraft specs including dimensions and capacities', 'Only performance data'],
+      correct: "General aircraft specs including dimensions and capacities",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "Which document should be used for quick emergency procedures?",
+      options: ['QRH', 'FCTM', 'FCOM', 'MEL'],
+      correct: "QRH",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "Purpose of 'Philosophy and Operating Rules' subchapter?",
+      options: ['Company organization', 'Foundations for safe and standardized operations', 'Cabin management rules', 'Maintenance strategy'],
+      correct: "Foundations for safe and standardized operations",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "Where can information about doors, evacuation, and life vests be found?",
+      options: ['Flight Controls', 'Handling Rules', 'Safety and Survival Equipment', 'Aircraft General'],
+      correct: "Safety and Survival Equipment",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "What is typically found in the FCOM Introduction?",
+      options: ['Performance tables', 'Emergency checklist', 'Manual structure, purpose, and scope', 'Electrical diagrams'],
+      correct: "Manual structure, purpose, and scope",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "Handling Rules must be applied:",
+      options: ['As requested by ATC', 'Throughout all operation phases as applicable', 'Only in severe weather', 'Only during international flights'],
+      correct: "Throughout all operation phases as applicable",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "How should pilots use the FCOM?",
+      options: ['Replace QRH in emergencies', 'Consult operational and system information', 'Plan preventive maintenance', 'Manage spare parts inventory'],
+      correct: "Consult operational and system information",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "Which section gives guidance on survival equipment use?",
+      options: ['Handling Rules', 'Safety and Survival Equipment', 'Navigation', 'Aircraft General'],
+      correct: "Safety and Survival Equipment",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "The FCOM Introduction typically includes:",
+      options: ['Electrical diagrams', 'Manual structure, purpose, and scope', 'Emergency checklist', 'Performance charts'],
+      correct: "Manual structure, purpose, and scope",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "The Aircraft General section includes:",
+      options: ['Weather radar operations', 'Checklist and memory items', 'Cabin layout and physical characteristics', 'Spare parts inventory'],
+      correct: "Cabin layout and physical characteristics",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    {
+      question: "The Airbus operational philosophy emphasizes:",
+      options: ['Full automation in all flight phases', 'Standardized decision-making based on safety and CRM', "Commander's decision without CRM", 'Different procedures depending on pilot experience'],
+      correct: "Standardized decision-making based on safety and CRM",
+      explanation: "Based on A320 FCOM – General Information."
+    },
+    
+    ];
+    let current = 0;
+    let answers = Array(questions.length).fill(null);
+    
+    const quizContainer = document.getElementById("quizContainer");
+
+    function loadQuestion(index) {
+      const q = questions[index];
+      let html = `<div class='question-block'><h2>Question ${index+1}/${questions.length}</h2><p>${q.question}</p>`;
+      q.options.forEach(opt => {
+        const checked = answers[index] === opt ? "checked" : "";
+        html += `<label><input type='radio' name='q${index}' value='${opt}' ${checked} onchange='saveAnswer(${index}, this.value)'> ${opt}</label><br>`;
+      });
+      html += `</div>`;
+      quizContainer.innerHTML = html;
+      updateProgress();
+    }
+
+    function saveAnswer(index, value) {
+      answers[index] = value;
+      const feedback = document.createElement("div");
+      const explanation = questions[index].explanation;
+      if (value === questions[index].correct) {
+        feedback.innerHTML = `<p class='correct'>Correct! ${explanation}</p>`;
+      } else {
+        feedback.innerHTML = `<p class='incorrect'>Incorrect. ${explanation}</p>`;
+      }
+      const block = document.querySelector(".question-block");
+      if (!block.querySelector(".correct") && !block.querySelector(".incorrect")) {
+        block.appendChild(feedback);
+      }
+    }
+
+    function updateProgress() {
+      const percent = Math.round((current+1) / questions.length * 100);
+      const progress = document.getElementById("progress");
+      progress.style.width = percent + "%";
+      progress.textContent = percent + "%";
+    }
+
+    function prevQuestion() {
+      if (current > 0) {
+        current--;
+        loadQuestion(current);
+      }
+    }
+
+    function nextQuestion() {
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion(current);
+      }
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      let reviewHTML = "<h2>Review</h2>";
+      questions.forEach((q, i) => {
+        const userAnswer = answers[i] || "No answer";
+        const isCorrect = userAnswer === q.correct;
+        if (isCorrect) score++;
+        reviewHTML += `<p><strong>Q${i+1}:</strong> ${q.question}<br>`;
+        reviewHTML += `Your answer: <span class='${isCorrect ? "correct" : "incorrect"}'>${userAnswer}</span><br>`;
+        reviewHTML += `Correct answer: ${q.correct}<br>`;
+        reviewHTML += `<em>${q.explanation}</em></p>`;
+      });
+      localStorage.setItem("fcomQuizScore", score);
+      document.getElementById("results").innerText = `You scored ${score} out of ${questions.length}`;
+      document.getElementById("review").innerHTML = reviewHTML;
+    }
+
+    // Start
+    loadQuestion(current);
+    
+  </script>
+</body>
+</html>
