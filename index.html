@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A320 FCOM – Full Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; background: #eef2f5; margin: 0; padding: 20px; color: #333; }
+    .container { max-width: 800px; margin: auto; }
+    .question-block { background: url('A_multiple-choice_digital_quiz_screenshot_features.png'); background-size: cover; background-position: center; color: white; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .navigation { text-align: center; margin-top: 20px; }
+    button { padding: 10px 20px; margin: 5px; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    .logo { text-align: center; }
+    .logo img { height: 40px; }
+    .feedback { font-weight: bold; margin-top: 10px; }
+    .correct { color: green; }
+    .incorrect { color: red; }
+  </style>
+</head>
+<body style="background: #eef2f5;">
+  <div class="container">
+    <h1>A320 FCOM – General Information Quiz</h1>
+    <div id="quizContainer"></div>
+    <div class="navigation">
+      <button onclick="prevQuestion()">Back</button>
+      <button onclick="nextQuestion()">Next</button>
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+    <div id="results" class="feedback"></div>
+  </div>
+  <script>
+    const questions = [{"question": "What is the main purpose of the FCOM?", "options": ["Describe administrative company procedures", "Provide maintenance data for mechanics", "Serve as an operational reference for flight crew", "Document aircraft modification history"], "correct": "Serve as an operational reference for flight crew"}, {"question": "Which operational philosophy does Airbus promote?", "options": ["Standardized decision-making based on safety and CRM", "Commander-centered decision without CRM", "Full use of automation in all phases", "Varying procedures per pilot experience"], "correct": "Standardized decision-making based on safety and CRM"}, {"question": "Where are aircraft handling instructions found?", "options": ["QRH - Quick Reference Handbook", "Aircraft General chapter", "MEL - Minimum Equipment List", "Handling Rules subchapter of FCOM"], "correct": "Handling Rules subchapter of FCOM"}, {"question": "What is the content of 'Safety and Survival Equipment'?", "options": ["Medical equipment required on ground", "Firefighting equipment for hangars", "Mandatory survival and safety items for crew and passengers", "Emergency nav and comm systems"], "correct": "Mandatory survival and safety items for crew and passengers"}, {"question": "'Aircraft General' subchapter describes:", "options": ["Only cockpit layout", "General aircraft specs including dimensions and capacities", "Only performance data", "Runway limitations on contaminated surfaces"], "correct": "General aircraft specs including dimensions and capacities"}, {"question": "Which document should be used for quick emergency procedures?", "options": ["FCOM", "QRH", "MEL", "FCTM"], "correct": "QRH"}, {"question": "Purpose of 'Philosophy and Operating Rules' subchapter?", "options": ["Company organization", "Maintenance strategy", "Cabin management rules", "Foundations for safe and standardized operations"], "correct": "Foundations for safe and standardized operations"}, {"question": "Where can information about doors, evacuation, and life vests be found?", "options": ["Flight Controls", "Handling Rules", "Safety and Survival Equipment", "Aircraft General"], "correct": "Safety and Survival Equipment"}, {"question": "What is typically found in the FCOM Introduction?", "options": ["Emergency checklist", "Manual structure, purpose, and scope", "Performance charts", "Electrical diagrams"], "correct": "Manual structure, purpose, and scope"}, {"question": "Handling Rules must be applied:", "options": ["Only during international flights", "As requested by ATC", "Only in severe weather", "Throughout all operation phases as applicable"], "correct": "Throughout all operation phases as applicable"}, {"question": "How should pilots use the FCOM?", "options": ["Replace QRH in emergencies", "Plan preventive maintenance", "Manage spare parts inventory", "Consult operational and system information"], "correct": "Consult operational and system information"}, {"question": "Which section gives guidance on survival equipment use?", "options": ["Aircraft General", "Handling Rules", "Safety and Survival Equipment", "Navigation"], "correct": "Safety and Survival Equipment"}, {"question": "The FCOM Introduction typically includes:", "options": ["Emergency checklist", "Electrical diagrams", "Manual structure, purpose, and scope", "Performance charts"], "correct": "Manual structure, purpose, and scope"}, {"question": "The Aircraft General section includes:", "options": ["Checklist and memory items", "Weather radar operations", "Spare parts inventory", "Cabin layout and physical characteristics"], "correct": "Cabin layout and physical characteristics"}, {"question": "The Airbus operational philosophy emphasizes:", "options": ["Full automation in all flight phases", "Different procedures depending on pilot experience", "Standardized decision-making based on safety and CRM", "Commander's decision without CRM"], "correct": "Standardized decision-making based on safety and CRM"}];
+    let current = 0;
+    let answers = Array(questions.length).fill(null);
+    const container = document.getElementById("quizContainer");
+
+    function loadQuestion(index) {
+      const q = questions[index];
+      let html = `
+        <div class='question-block'>
+          <div class='logo'><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Azul_Linhas_A%C3%A9reas_logo.svg/512px-Azul_Linhas_A%C3%A9reas_logo.svg.png" alt="Azul Logo" /></div>
+          <h2>Question ${index+1} of ${questions.length}</h2>
+          <p>${q.question}</p>`;
+      q.options.forEach(opt => {
+        const checked = answers[index] === opt ? "checked" : "";
+        html += `<label><input type='radio' name='q${index}' value='${opt}' ${checked} onclick='checkAnswer(${index}, "${opt}")'> ${opt}</label><br>`;
+      });
+      html += `<div id='feedback${index}' class='feedback'></div></div>`;
+      container.innerHTML = html;
+    }
+
+    function checkAnswer(index, selected) {
+      answers[index] = selected;
+      const feedbackDiv = document.getElementById("feedback" + index);
+      const correct = questions[index].correct;
+      const explanation = "Based on A320 FCOM – General Information.";
+      feedbackDiv.innerHTML = "";
+      if (selected === correct) {
+        feedbackDiv.innerHTML = `<span class='correct'>Correct!</span> ` + explanation;
+      } else {
+        feedbackDiv.innerHTML = `<span class='incorrect'>Incorrect.</span> ` + explanation;
+      }
+    }
+
+    function prevQuestion() {
+      if (current > 0) {
+        current--;
+        loadQuestion(current);
+      }
+    }
+
+    function nextQuestion() {
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion(current);
+      }
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      for (let i = 0; i < questions.length; i++) {
+        if (answers[i] === questions[i].correct) score++;
+      }
+      document.getElementById("results").innerText = `You scored ${score} out of ${questions.length}`;
+    }
+
+    loadQuestion(current);
+  </script>
+</body>
+</html>
