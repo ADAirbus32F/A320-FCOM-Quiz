@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A320 FCOM – Interactive Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .question-block {
+      background: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .navigation {
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .logo {
+      text-align: center;
+    }
+    .logo img {
+      height: 40px;
+    }
+    .feedback {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>A320 FCOM – General Information Quiz</h1>
+    <div id="quizContainer"></div>
+    <div class="navigation">
+      <button onclick="prevQuestion()">Back</button>
+      <button onclick="nextQuestion()">Next</button>
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+    <div id="results" class="feedback"></div>
+  </div>
+  <script>
+    const questions = [
+      {
+        question: "What is the main purpose of the FCOM?",
+        options: [
+          "Describe administrative company procedures",
+          "Provide maintenance data for mechanics",
+          "Serve as an operational reference for flight crew",
+          "Document aircraft modification history"
+        ],
+        correct: "Serve as an operational reference for flight crew",
+        explanation: "It provides operational guidance to flight crews as per Airbus standard."
+      },
+      {
+        question: "Which operational philosophy does Airbus promote?",
+        options: [
+          "Standardized decision-making based on safety and CRM",
+          "Commander-centered decision without CRM",
+          "Full use of automation in all phases",
+          "Varying procedures per pilot experience"
+        ],
+        correct: "Standardized decision-making based on safety and CRM",
+        explanation: "Airbus promotes CRM and operational standardization across the fleet."
+      }
+    ];
+
+    let current = 0;
+    let answers = Array(questions.length).fill(null);
+    const container = document.getElementById("quizContainer");
+
+    function loadQuestion(index) {
+      const q = questions[index];
+      let html = `
+        <div class='question-block'>
+          <div class='logo'><img src="${logo_url}" alt="Azul Logo" /></div>
+          <h2>Question ${index+1} of ${questions.length}</h2>
+          <p>${q.question}</p>`;
+      q.options.forEach(opt => {
+        const checked = answers[index] === opt ? "checked" : "";
+        html += `<label><input type='radio' name='q${index}' value='${opt}' ${checked} onclick='checkAnswer(${index}, this.value)'> ${opt}</label><br>`;
+      });
+      html += `<div id='feedback${index}' class='feedback'></div></div>`;
+      container.innerHTML = html;
+    }
+
+    function checkAnswer(index, selected) {
+      answers[index] = selected;
+      const feedbackDiv = document.getElementById("feedback" + index);
+      const correct = questions[index].correct;
+      const explanation = questions[index].explanation;
+      feedbackDiv.innerHTML = "";
+      if (selected === correct) {
+        feedbackDiv.innerHTML = `<span class='correct'>Correct!</span> ` + explanation;
+      } else {
+        feedbackDiv.innerHTML = `<span class='incorrect'>Incorrect.</span> ` + explanation;
+      }
+    }
+
+    function prevQuestion() {
+      if (current > 0) {
+        current--;
+        loadQuestion(current);
+      }
+    }
+
+    function nextQuestion() {
+      if (current < questions.length - 1) {
+        current++;
+        loadQuestion(current);
+      }
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      for (let i = 0; i < questions.length; i++) {
+        if (answers[i] === questions[i].correct) score++;
+      }
+      document.getElementById("results").innerText = `You scored ${score} out of ${questions.length}`;
+    }
+
+    loadQuestion(current);
+  </script>
+</body>
+</html>
